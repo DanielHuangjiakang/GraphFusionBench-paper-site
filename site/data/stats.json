@@ -1,0 +1,31 @@
+{
+  "summary": {
+    "samplePoolModels": 40459,
+    "afterDumpModels": 25987,
+    "latestSuccess": 25896,
+    "fusedModels": 7904,
+    "sftRecords": 1893,
+    "sftFusionRecords": 4142
+  },
+  "benchmarks": [
+    { "name": "KernelBench", "sourceScale": "270", "samplePool": 270, "afterDump": 247, "latestSuccess": 247 },
+    { "name": "TritonBench", "sourceScale": "350", "samplePool": 342, "afterDump": 83, "latestSuccess": 83 },
+    { "name": "MultiKernelBench", "sourceScale": "285", "samplePool": 300, "afterDump": 66, "latestSuccess": 66 },
+    { "name": "BackendBench", "sourceScale": "155 traces", "samplePool": 15465, "afterDump": 12455, "latestSuccess": 12408 },
+    { "name": "FlashInfer-Bench", "sourceScale": "dynamic", "samplePool": 79, "afterDump": 38, "latestSuccess": 33 },
+    { "name": "GEAK Evaluation Suite", "sourceScale": "215", "samplePool": 209, "afterDump": 76, "latestSuccess": 76 },
+    { "name": "KernelBook", "sourceScale": "~18000", "samplePool": 17585, "afterDump": 7826, "latestSuccess": 7811 },
+    { "name": "CUDA-Agent-Ops-6K", "sourceScale": "6000", "samplePool": 6000, "afterDump": 5112, "latestSuccess": 5102 },
+    { "name": "SOL-ExecBench", "sourceScale": "235", "samplePool": 209, "afterDump": 84, "latestSuccess": 70 }
+  ],
+  "sftBuckets": [
+    { "bucket": "1", "selected": 100, "noFusion": 100, "fused": 0 },
+    { "bucket": "2", "selected": 400, "noFusion": 171, "fused": 229 },
+    { "bucket": "3-4", "selected": 400, "noFusion": 100, "fused": 300 },
+    { "bucket": "5-9", "selected": 400, "noFusion": 100, "fused": 300 },
+    { "bucket": "10-19", "selected": 400, "noFusion": 100, "fused": 300 },
+    { "bucket": "20-49", "selected": 100, "noFusion": 25, "fused": 75 },
+    { "bucket": "50-99", "selected": 43, "noFusion": 11, "fused": 32 },
+    { "bucket": "100+", "selected": 50, "noFusion": 12, "fused": 38 }
+  ]
+}

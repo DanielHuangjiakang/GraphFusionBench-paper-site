@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="GraphFusionBench: a benchmark construction pipeline for studying PyTorch graph fusion behavior.">
+    <title>GraphFusionBench</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav">
+        <a class="brand" href="#top">GraphFusionBench</a>
+        <div class="nav-links" aria-label="Primary navigation">
+          <a href="#abstract">Abstract</a>
+          <a href="#pipeline">Pipeline</a>
+          <a href="#data">Data</a>
+          <a href="#sft">SFT</a>
+          <a href="#citation">Citation</a>
+          <a href="https://github.com/DanielHuangjiakang/GraphFusionBench" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-content">
+          <p class="eyebrow">Benchmark Construction for PyTorch Graph Fusion</p>
+          <h1><span>GraphFusion</span><span>Bench</span></h1>
+          <p class="subtitle">
+            A structured sample pool and dump collection pipeline for studying pre-fusion
+            graphs, post-fusion scheduler behavior, and supervised reasoning data for
+            graph fusion decisions.
+          </p>
+          <div class="button-row">
+            <a class="button primary" href="#pipeline">View Construction Pipeline</a>
+            <a class="button" href="#data">Dataset Statistics</a>
+            <a class="button" href="https://github.com/DanielHuangjiakang/GraphFusionBench" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+          </div>
+        </div>
+        <aside class="hero-card" aria-label="Key statistics">
+          <div>
+            <span class="metric" data-summary="samplePoolModels">40,459</span>
+            <span class="label">sample-pool models</span>
+          </div>
+          <div>
+            <span class="metric" data-summary="afterDumpModels">25,987</span>
+            <span class="label">models with archived dumps</span>
+          </div>
+          <div>
+            <span class="metric" data-summary="sftRecords">1,893</span>
+            <span class="label">SFT records</span>
+          </div>
+        </aside>
+      </section>
+
+      <section id="abstract" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Overview</p>
+          <h2>Abstract</h2>
+        </div>
+        <div class="text-block">
+          <p>
+            GraphFusionBench is a benchmark construction effort for PyTorch graph fusion
+            research. It aggregates runnable model fragments from public benchmarks,
+            standardizes them into single-file CUDA-ready PyTorch modules, compiles them
+            on GPU machines, and archives both pre-fusion and post-fusion dumps.
+          </p>
+          <p>
+            The resulting artifacts support node-count stratification, fused/non-fused
+            analysis, and instruction-tuning data generation where the input is the
+            pre-fusion graph and the target output follows the baseline post-fusion
+            scheduler result.
+          </p>
+        </div>
+      </section>
+
+      <section id="pipeline" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Method</p>
+          <h2>Construction Pipeline</h2>
+        </div>
+        <div class="timeline">
+          <article>
+            <span>01</span>
+            <h3>Collect Benchmarks</h3>
+            <p>Collect non-TorchBench benchmark sources and inspect whether each task can be converted into a runnable PyTorch module.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Standardize Models</h3>
+            <p>Wrap each candidate as a standalone `.py` file with metadata, `Model(nn.Module)`, `get_model()`, and CUDA-ready inputs.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Compile and Dump</h3>
+            <p>Run baseline PyTorch Inductor compilation on CUDA machines and archive pre-fusion graph dumps plus post-fusion results.</p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Stratify and Sample</h3>
+            <p>Bucket models by node count and sample fused/non-fused examples for downstream SFT data construction.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="data" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Dataset</p>
+          <h2>Benchmark Coverage</h2>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <strong data-summary="samplePoolModels">40,459</strong>
+            <span>extracted sample-pool files</span>
+          </div>
+          <div class="stat-card">
+            <strong data-summary="afterDumpModels">25,987</strong>
+            <span>metadata-complete dump samples</span>
+          </div>
+          <div class="stat-card">
+            <strong data-summary="latestSuccess">25,896</strong>
+            <span>latest successful baseline runs</span>
+          </div>
+          <div class="stat-card">
+            <strong data-summary="fusedModels">7,904</strong>
+            <span>models with at least one fused group</span>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Benchmark</th>
+                <th>Source scale</th>
+                <th>Sample pool</th>
+                <th>After dump</th>
+                <th>Latest success</th>
+              </tr>
+            </thead>
+            <tbody id="benchmark-table">
+              <tr><td>KernelBench</td><td>270</td><td>270</td><td>247</td><td>247</td></tr>
+              <tr><td>BackendBench</td><td>155 traces</td><td>15,465</td><td>12,455</td><td>12,408</td></tr>
+              <tr><td>KernelBook</td><td>~18,000</td><td>17,585</td><td>7,826</td><td>7,811</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="sft" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Training Data</p>
+          <h2>SFT Data Construction</h2>
+        </div>
+        <div class="split">
+          <div class="text-block">
+            <p>
+              The SFT format follows the Alpaca schema. The instruction is shared across
+              examples, the input is the pre-fusion `graph_adj.txt`, and the output is a
+              reasoning trace plus JSONL fusion groups derived from the baseline
+              post-fusion dump.
+            </p>
+            <p>
+              Sampling is stratified by graph node count. Buckets with 3+ nodes target a
+              1/4 no-fusion and 3/4 fused split when enough successful models exist.
+            </p>
+          </div>
+          <div class="chart-card">
+            <h3>SFT buckets</h3>
+            <div id="bucket-bars" class="bucket-bars" aria-label="SFT bucket distribution"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="artifacts" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Artifacts</p>
+          <h2>Repository Layout</h2>
+        </div>
+        <pre class="code-block"><code>GraphFusionBench/
+  models_by_bench/
+  models_by_bench_after_dump/
+    dumps/
+      pre_fusion/
+      post_fusion/
+  models_for_sft/
+  report/
+  tools/</code></pre>
+      </section>
+
+      <section id="citation" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Reference</p>
+          <h2>Citation</h2>
+        </div>
+        <pre class="code-block"><code>@misc{graphfusionbench2026,
+  title  = {GraphFusionBench: Benchmark Construction for PyTorch Graph Fusion},
+  author = {GraphFusionBench Contributors},
+  year   = {2026},
+  note   = {Project website and benchmark construction notes}
+}</code></pre>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>GraphFusionBench. Static project page generated for GitHub Pages.</p>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
