@@ -198,8 +198,8 @@
             <span>generated benchmark samples</span>
           </div>
           <div class="stat-card">
-            <strong data-summary="hasFusion">7,951</strong>
-            <span>has-fusion samples (79.5%)</span>
+            <strong data-summary="hasFusion">6,611</strong>
+            <span>has-fusion samples (66.1%)</span>
           </div>
           <div class="stat-card">
             <strong data-summary="templateTypes">25</strong>
@@ -224,15 +224,16 @@
           </div>
 
           <div class="chart-card">
-            <h3>Fusion group size distribution (60,561 groups)</h3>
+            <h3>Fusion group size distribution (61,041 groups)</h3>
             <div id="fusion-size-bars" class="fusion-size-bars">
               <!-- rendered by JS -->
             </div>
             <div class="text-block" style="margin-top:16px;font-size:0.9rem;">
               <p>
-                Average group size: <strong>2.31 nodes</strong>.
-                Size-3 groups come from Conv+BN and LayerNorm templates;
-                size-4 from attention softmax decomposition chains.
+                Average group size: <strong>2.07 nodes</strong>.
+                Size-3 groups come from Conv+BN, LayerNorm, and Attention softmax
+                templates. No size-4+ groups observed on actual GPU (GTX 1660 Ti,
+                PyTorch 2.7.1) — the attention chain fuses as a size-3 group.
               </p>
             </div>
           </div>
