@@ -108,39 +108,36 @@ function renderBucketBars(buckets) {
 }
 
 function renderFtSplit(ftSplit) {
-  if (!ftSplit) return;
-  const { sft, rl } = ftSplit;
+  if (!ftSplit || !ftSplit.sft) return;
+  const sft = ftSplit.sft;
+  const buckets = sft.buckets || [];
 
-  // Summary cards
-  const sftTotal = document.querySelector("[data-ft='sftTotal']");
-  const rlTotal  = document.querySelector("[data-ft='rlTotal']");
-  const sftFused = document.querySelector("[data-ft='sftFused']");
-  const rlFused  = document.querySelector("[data-ft='rlFused']");
-  if (sftTotal) sftTotal.textContent = numberFormat.format(sft.total);
-  if (rlTotal)  rlTotal.textContent  = numberFormat.format(rl.total);
-  if (sftFused) sftFused.textContent = `${numberFormat.format(sft.hasFusion)} (${(sft.hasFusion/sft.total*100).toFixed(1)}%)`;
-  if (rlFused)  rlFused.textContent  = `${numberFormat.format(rl.hasFusion)} (${(rl.hasFusion/rl.total*100).toFixed(1)}%)`;
+  const root = document.querySelector("#sft-bucket-rows");
+  if (!root || !buckets.length) return;
 
-  // SFT bucket bars
-  const root = document.querySelector("#sft-bucket-bars");
-  if (root && sft.buckets) {
-    root.innerHTML = sft.buckets.map((b) => {
-      const fusedPct = (b.hasFusion / b.count) * 100;
-      const nonePct  = (b.noFusion  / b.count) * 100;
-      return `
-        <div class="bucket-row">
-          <div class="bucket-id-col">
-            <strong>${b.id}</strong>
-            <span class="bucket-range">${b.range}</span>
-          </div>
-          <div class="bar" title="${b.hasFusion} fused, ${b.noFusion} no-fusion">
+  root.innerHTML = buckets.map((b) => {
+    const fusedPct = (b.hasFusion / b.count) * 100;
+    const nonePct  = (b.noFusion  / b.count) * 100;
+    return `
+      <div class="sft-row">
+        <div class="sft-id">
+          <strong>${b.id}</strong>
+          <span class="bucket-range">${b.range}&nbsp;nodes</span>
+        </div>
+        <div class="sft-bar-wrap">
+          <div class="bar" title="${b.hasFusion} fused / ${b.noFusion} no-fusion">
             <span class="fused" style="width:${fusedPct}%"></span>
             <span class="none"  style="width:${nonePct}%"></span>
           </div>
-          <span class="bucket-count">${numberFormat.format(b.count)}</span>
-        </div>`;
-    }).join("");
-  }
+        </div>
+        <div class="sft-nums">
+          <span class="sft-num-fused">${b.hasFusion}</span>
+          <span class="sft-sep">/</span>
+          <span class="sft-num-none">${b.noFusion}</span>
+        </div>
+        <span class="sft-total">${b.count}</span>
+      </div>`;
+  }).join("");
 }
 
 async function loadStats() {

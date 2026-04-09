@@ -207,7 +207,7 @@
             <span>template types</span>
           </div>
           <div class="stat-card">
-            <strong>2.31</strong>
+            <strong>2.07</strong>
             <span>avg fusion group size</span>
           </div>
         </div>
@@ -247,70 +247,59 @@
           <p class="eyebrow">Training Data Split</p>
           <h2>SFT / RL Split</h2>
         </div>
-        <div class="text-block" style="margin-bottom:28px;">
-          <p>
-            GraphFusionBench10k is split into a supervised fine-tuning set (SFT, 1,000
-            samples) and a reinforcement learning set (RL, 9,000 samples) using
-            bucket-stratified sampling that preserves each bucket's actual
-            has-fusion / no-fusion ratio from the GPU dump results (seed&nbsp;42).
+
+        <!-- 10% / 90% ratio bar -->
+        <div class="ft-ratio-wrap">
+          <div class="ft-ratio-bar">
+            <div class="ft-ratio-sft">SFT &nbsp;10%</div>
+            <div class="ft-ratio-rl">RL &nbsp;90%</div>
+          </div>
+          <p class="ft-ratio-note">
+            Bucket-stratified sampling — each bucket's has-fusion / no-fusion ratio
+            preserved from GPU dump results (seed&nbsp;42).
           </p>
         </div>
 
-        <div class="stats-grid">
-          <div class="stat-card">
-            <strong>SFT</strong>
-            <span data-ft="sftTotal">1,000</span> samples
+        <!-- Two comparison cards -->
+        <div class="ft-compare">
+          <div class="chart-card ft-half">
+            <div class="ft-pill sft-pill">SFT</div>
+            <div class="ft-big-num">1,000</div>
+            <p class="ft-desc">Supervised fine-tuning samples</p>
+            <div class="ft-mini-bar bar">
+              <span class="fused" style="width:66%"></span>
+              <span class="none"  style="width:34%"></span>
+            </div>
+            <div class="ft-counts">
+              <span><strong>660</strong> fused &nbsp;66.0%</span>
+              <span><strong>340</strong> no-fusion &nbsp;34.0%</span>
+            </div>
           </div>
-          <div class="stat-card">
-            <strong data-ft="sftFused">660 (66.0%)</strong>
-            <span>SFT has-fusion</span>
-          </div>
-          <div class="stat-card">
-            <strong>RL</strong>
-            <span data-ft="rlTotal">9,000</span> samples
-          </div>
-          <div class="stat-card">
-            <strong data-ft="rlFused">5,951 (66.1%)</strong>
-            <span>RL has-fusion</span>
+
+          <div class="chart-card ft-half">
+            <div class="ft-pill rl-pill">RL</div>
+            <div class="ft-big-num">9,000</div>
+            <p class="ft-desc">Reinforcement learning samples</p>
+            <div class="ft-mini-bar bar">
+              <span class="fused" style="width:66.1%"></span>
+              <span class="none"  style="width:33.9%"></span>
+            </div>
+            <div class="ft-counts">
+              <span><strong>5,951</strong> fused &nbsp;66.1%</span>
+              <span><strong>3,049</strong> no-fusion &nbsp;33.9%</span>
+            </div>
           </div>
         </div>
 
-        <div class="bench10k-grid">
-          <div class="chart-card">
-            <h3>SFT bucket distribution (1,000 samples)</h3>
-            <div id="sft-bucket-bars" class="bucket-bars">
-              <!-- rendered by JS -->
-            </div>
-            <div class="bar-legend">
-              <span class="legend-fused">Has fusion</span>
-              <span class="legend-none">No fusion</span>
-            </div>
+        <!-- SFT per-bucket breakdown -->
+        <div class="chart-card" style="margin-top:20px;">
+          <h3>SFT per-bucket breakdown</h3>
+          <div id="sft-bucket-rows" class="sft-bucket-rows">
+            <!-- rendered by JS -->
           </div>
-
-          <div class="chart-card">
-            <h3>Sampling strategy</h3>
-            <div class="text-block" style="font-size:0.95rem;">
-              <p>
-                Each bucket receives a quota proportional to its share of the full 10k
-                dataset. Within each bucket, the has-fusion / no-fusion ratio from the
-                actual GPU dump is preserved exactly.
-              </p>
-              <table style="margin-top:16px;font-size:0.88rem;">
-                <thead>
-                  <tr><th>Bucket</th><th>Quota</th><th>Fused%</th></tr>
-                </thead>
-                <tbody>
-                  <tr><td>B1 (1–3)</td>  <td>50</td>  <td>36%</td></tr>
-                  <tr><td>B2 (4–8)</td>  <td>210</td> <td>70%</td></tr>
-                  <tr><td>B3 (9–15)</td> <td>210</td> <td>67%</td></tr>
-                  <tr><td>B4 (16–25)</td><td>210</td> <td>65%</td></tr>
-                  <tr><td>B5 (26–50)</td><td>210</td> <td>66%</td></tr>
-                  <tr><td>B6 (51–80)</td><td>50</td>  <td>76%</td></tr>
-                  <tr><td>B7 (81–150)</td><td>30</td> <td>73%</td></tr>
-                  <tr><td>B8 (150+)</td> <td>30</td>  <td>73%</td></tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="bar-legend" style="margin-top:16px;">
+            <span class="legend-fused">Has fusion</span>
+            <span class="legend-none">No fusion</span>
           </div>
         </div>
       </section>

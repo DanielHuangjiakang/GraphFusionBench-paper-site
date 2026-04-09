@@ -525,6 +525,152 @@ td.col-notes {
 .bar-legend .legend-fused::before { background: var(--blue); }
 .bar-legend .legend-none::before  { background: var(--gold); }
 
+/* ── FT Split section ────────────────────────────────── */
+
+.ft-ratio-wrap {
+  margin-bottom: 24px;
+}
+
+.ft-ratio-bar {
+  display: flex;
+  height: 40px;
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.ft-ratio-sft {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10%;
+  background: var(--blue);
+  color: white;
+  white-space: nowrap;
+  font-size: 0.78rem;
+}
+
+.ft-ratio-rl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  background: #dbe8fc;
+  color: var(--blue-dark);
+}
+
+.ft-ratio-note {
+  margin: 10px 0 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.ft-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+
+.ft-half {
+  padding: 24px;
+}
+
+.ft-pill {
+  display: inline-block;
+  padding: 3px 14px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+
+.sft-pill {
+  background: var(--blue);
+  color: white;
+}
+
+.rl-pill {
+  background: #dbe8fc;
+  color: var(--blue-dark);
+}
+
+.ft-big-num {
+  font-size: 2.6rem;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.ft-desc {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.ft-mini-bar {
+  height: 14px;
+  margin-bottom: 12px;
+}
+
+.ft-counts {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.ft-counts strong {
+  color: var(--ink);
+}
+
+/* SFT per-bucket breakdown rows */
+
+.sft-bucket-rows {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.sft-row {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr) 90px 44px;
+  gap: 12px;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.sft-id {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.sft-bar-wrap .bar {
+  height: 12px;
+}
+
+.sft-nums {
+  display: flex;
+  gap: 4px;
+  font-size: 0.84rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.sft-num-fused { color: var(--blue); font-weight: 600; }
+.sft-sep       { color: var(--muted); }
+.sft-num-none  { color: var(--gold); font-weight: 600; }
+
+.sft-total {
+  text-align: right;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
 /* ── SFT split layout ────────────────────────────────── */
 
 .split {
@@ -573,7 +719,8 @@ td.col-notes {
 
 @media (max-width: 900px) {
   .split,
-  .bench10k-grid {
+  .bench10k-grid,
+  .ft-compare {
     grid-template-columns: 1fr;
   }
 
