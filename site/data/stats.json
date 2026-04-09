@@ -1,31 +1,66 @@
 {
   "summary": {
-    "samplePoolModels": 40459,
-    "afterDumpModels": 25987,
-    "latestSuccess": 25896,
-    "fusedModels": 7904,
-    "sftRecords": 1893,
-    "sftFusionRecords": 4142
+    "samplePoolRaw": 40459,
+    "samplePoolDedup": 19550,
+    "generatedBenchmark": 10000,
+    "hasFusion": 7951,
+    "noFusion": 2049,
+    "templateTypes": 25,
+    "sftRecords": 1893
   },
   "benchmarks": [
-    { "name": "KernelBench", "sourceScale": "270", "samplePool": 270, "afterDump": 247, "latestSuccess": 247 },
-    { "name": "TritonBench", "sourceScale": "350", "samplePool": 342, "afterDump": 83, "latestSuccess": 83 },
-    { "name": "MultiKernelBench", "sourceScale": "285", "samplePool": 300, "afterDump": 66, "latestSuccess": 66 },
-    { "name": "BackendBench", "sourceScale": "155 traces", "samplePool": 15465, "afterDump": 12455, "latestSuccess": 12408 },
-    { "name": "FlashInfer-Bench", "sourceScale": "dynamic", "samplePool": 79, "afterDump": 38, "latestSuccess": 33 },
-    { "name": "GEAK Evaluation Suite", "sourceScale": "215", "samplePool": 209, "afterDump": 76, "latestSuccess": 76 },
-    { "name": "KernelBook", "sourceScale": "~18000", "samplePool": 17585, "afterDump": 7826, "latestSuccess": 7811 },
-    { "name": "CUDA-Agent-Ops-6K", "sourceScale": "6000", "samplePool": 6000, "afterDump": 5112, "latestSuccess": 5102 },
-    { "name": "SOL-ExecBench", "sourceScale": "235", "samplePool": 209, "afterDump": 84, "latestSuccess": 70 }
+    { "name": "BackendBench",    "raw": 15465, "dedup": 129,   "dedupRate": 99.2, "notes": "Single-op backward/forward traces" },
+    { "name": "KernelBook",      "raw": 17585, "dedup": 13153, "dedupRate": 25.2, "notes": "MLP/CNN/Attention/RNN/Embedding structures" },
+    { "name": "CUDAAgentOps6K",  "raw": 6000,  "dedup": 5325,  "dedupRate": 11.2, "notes": "2–5 op random combinations (BN+pool, relu+pow+abs)" },
+    { "name": "TritonBench",     "raw": 342,   "dedup": 279,   "dedupRate": 18.4, "notes": "Triton attention, apply_penalty" },
+    { "name": "KernelBench",     "raw": 270,   "dedup": 243,   "dedupRate": 10.0, "notes": "Tensor op combinations (hinge loss, 3D/4D matmul)" },
+    { "name": "GEAK",            "raw": 209,   "dedup": 130,   "dedupRate": 37.8, "notes": "Triton Adam, elementwise, attention kernels" },
+    { "name": "SOLExecBench",    "raw": 209,   "dedup": 209,   "dedupRate": 0.0,  "notes": "VAE+conv+GN+SiLU, attn+softmax fusion paths" },
+    { "name": "MultiKernelBench","raw": 300,   "dedup": 54,    "dedupRate": 82.0, "notes": "Causal/cross/cross-modal attention" },
+    { "name": "FlashInferBench", "raw": 79,    "dedup": 28,    "dedupRate": 64.6, "notes": "DSA sparse attention, TopK indexer" }
   ],
+  "domainCoverage": [
+    { "domain": "Normalization (BN/LN/GN/IN)", "count": 8329, "pct": 42.6 },
+    { "domain": "Conv / CNN",                  "count": 6727, "pct": 34.4 },
+    { "domain": "Attention / Transformer",     "count": 1789, "pct": 9.2  },
+    { "domain": "Linear / MLP / FFN",          "count": 872,  "pct": 4.5  },
+    { "domain": "Loss functions",              "count": 816,  "pct": 4.2  },
+    { "domain": "Reduction / aggregation",     "count": 513,  "pct": 2.6  },
+    { "domain": "Triton kernels",              "count": 168,  "pct": 0.9  },
+    { "domain": "Recurrent (LSTM/GRU/RNN)",    "count": 40,   "pct": 0.2  }
+  ],
+  "graphfusionbench10k": {
+    "total": 10000,
+    "hasFusion": 7951,
+    "noFusion": 2049,
+    "templateCount": 25,
+    "fusionGroupTotal": 60561,
+    "avgGroupSize": 2.31,
+    "buckets": [
+      { "id": "B1", "range": "1–3",    "count": 500,  "hasFusion": 250,  "noFusion": 250 },
+      { "id": "B2", "range": "4–8",    "count": 2100, "hasFusion": 1804, "noFusion": 296 },
+      { "id": "B3", "range": "9–15",   "count": 2100, "hasFusion": 1723, "noFusion": 377 },
+      { "id": "B4", "range": "16–25",  "count": 2100, "hasFusion": 1662, "noFusion": 438 },
+      { "id": "B5", "range": "26–50",  "count": 2100, "hasFusion": 1687, "noFusion": 413 },
+      { "id": "B6", "range": "51–80",  "count": 500,  "hasFusion": 375,  "noFusion": 125 },
+      { "id": "B7", "range": "81–150", "count": 300,  "hasFusion": 225,  "noFusion": 75  },
+      { "id": "B8", "range": "150+",   "count": 300,  "hasFusion": 225,  "noFusion": 75  }
+    ],
+    "fusionGroupSizes": [
+      { "label": "Size 2",    "count": 54341, "pct": 89.7, "source": "pw+pw, red+pw chains" },
+      { "label": "Size 3",    "count": 3862,  "pct": 6.4,  "source": "Conv/LN: red(var_mean)+pw(norm)+pw(act)" },
+      { "label": "Size 4",    "count": 1073,  "pct": 1.8,  "source": "Attention: red(max)+pw+red(sum)+pw(div)" },
+      { "label": "Size 5–32", "count": 1285,  "pct": 2.1,  "source": "Large permute/conv chains" }
+    ]
+  },
   "sftBuckets": [
-    { "bucket": "1", "selected": 100, "noFusion": 100, "fused": 0 },
-    { "bucket": "2", "selected": 400, "noFusion": 171, "fused": 229 },
-    { "bucket": "3-4", "selected": 400, "noFusion": 100, "fused": 300 },
-    { "bucket": "5-9", "selected": 400, "noFusion": 100, "fused": 300 },
-    { "bucket": "10-19", "selected": 400, "noFusion": 100, "fused": 300 },
-    { "bucket": "20-49", "selected": 100, "noFusion": 25, "fused": 75 },
-    { "bucket": "50-99", "selected": 43, "noFusion": 11, "fused": 32 },
-    { "bucket": "100+", "selected": 50, "noFusion": 12, "fused": 38 }
+    { "bucket": "B1 (1–3)",    "selected": 500,  "noFusion": 250, "fused": 250  },
+    { "bucket": "B2 (4–8)",    "selected": 2100, "noFusion": 296, "fused": 1804 },
+    { "bucket": "B3 (9–15)",   "selected": 2100, "noFusion": 377, "fused": 1723 },
+    { "bucket": "B4 (16–25)",  "selected": 2100, "noFusion": 438, "fused": 1662 },
+    { "bucket": "B5 (26–50)",  "selected": 2100, "noFusion": 413, "fused": 1687 },
+    { "bucket": "B6 (51–80)",  "selected": 500,  "noFusion": 125, "fused": 375  },
+    { "bucket": "B7 (81–150)", "selected": 300,  "noFusion": 75,  "fused": 225  },
+    { "bucket": "B8 (150+)",   "selected": 300,  "noFusion": 75,  "fused": 225  }
   ]
 }
