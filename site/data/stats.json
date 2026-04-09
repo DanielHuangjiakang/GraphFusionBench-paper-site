@@ -6,7 +6,31 @@
     "hasFusion": 6611,
     "noFusion": 3389,
     "templateTypes": 25,
-    "sftRecords": 1893
+    "sftRecords": 1893,
+    "sftSplit": 1000,
+    "rlSplit": 9000
+  },
+  "ftSplit": {
+    "sft": {
+      "total": 1000,
+      "hasFusion": 660,
+      "noFusion": 340,
+      "buckets": [
+        { "id": "B1", "range": "1–3",    "count": 50,  "hasFusion": 18,  "noFusion": 32 },
+        { "id": "B2", "range": "4–8",    "count": 210, "hasFusion": 146, "noFusion": 64 },
+        { "id": "B3", "range": "9–15",   "count": 210, "hasFusion": 140, "noFusion": 70 },
+        { "id": "B4", "range": "16–25",  "count": 210, "hasFusion": 136, "noFusion": 74 },
+        { "id": "B5", "range": "26–50",  "count": 210, "hasFusion": 138, "noFusion": 72 },
+        { "id": "B6", "range": "51–80",  "count": 50,  "hasFusion": 38,  "noFusion": 12 },
+        { "id": "B7", "range": "81–150", "count": 30,  "hasFusion": 22,  "noFusion": 8  },
+        { "id": "B8", "range": "150+",   "count": 30,  "hasFusion": 22,  "noFusion": 8  }
+      ]
+    },
+    "rl": {
+      "total": 9000,
+      "hasFusion": 5951,
+      "noFusion": 3049
+    }
   },
   "benchmarks": [
     { "name": "BackendBench",    "raw": 15465, "dedup": 129,   "dedupRate": 99.2, "notes": "Single-op backward/forward traces" },

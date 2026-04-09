@@ -107,6 +107,42 @@ function renderBucketBars(buckets) {
     .join("");
 }
 
+function renderFtSplit(ftSplit) {
+  if (!ftSplit) return;
+  const { sft, rl } = ftSplit;
+
+  // Summary cards
+  const sftTotal = document.querySelector("[data-ft='sftTotal']");
+  const rlTotal  = document.querySelector("[data-ft='rlTotal']");
+  const sftFused = document.querySelector("[data-ft='sftFused']");
+  const rlFused  = document.querySelector("[data-ft='rlFused']");
+  if (sftTotal) sftTotal.textContent = numberFormat.format(sft.total);
+  if (rlTotal)  rlTotal.textContent  = numberFormat.format(rl.total);
+  if (sftFused) sftFused.textContent = `${numberFormat.format(sft.hasFusion)} (${(sft.hasFusion/sft.total*100).toFixed(1)}%)`;
+  if (rlFused)  rlFused.textContent  = `${numberFormat.format(rl.hasFusion)} (${(rl.hasFusion/rl.total*100).toFixed(1)}%)`;
+
+  // SFT bucket bars
+  const root = document.querySelector("#sft-bucket-bars");
+  if (root && sft.buckets) {
+    root.innerHTML = sft.buckets.map((b) => {
+      const fusedPct = (b.hasFusion / b.count) * 100;
+      const nonePct  = (b.noFusion  / b.count) * 100;
+      return `
+        <div class="bucket-row">
+          <div class="bucket-id-col">
+            <strong>${b.id}</strong>
+            <span class="bucket-range">${b.range}</span>
+          </div>
+          <div class="bar" title="${b.hasFusion} fused, ${b.noFusion} no-fusion">
+            <span class="fused" style="width:${fusedPct}%"></span>
+            <span class="none"  style="width:${nonePct}%"></span>
+          </div>
+          <span class="bucket-count">${numberFormat.format(b.count)}</span>
+        </div>`;
+    }).join("");
+  }
+}
+
 async function loadStats() {
   try {
     const res = await fetch("data/stats.json");
@@ -118,6 +154,7 @@ async function loadStats() {
     const b10k = data.graphfusionbench10k || {};
     render10kBuckets(b10k.buckets || []);
     renderFusionSizeBars(b10k.fusionGroupSizes || []);
+    renderFtSplit(data.ftSplit || null);
     renderBucketBars(data.sftBuckets || []);
   } catch (err) {
     console.warn("stats load failed:", err);

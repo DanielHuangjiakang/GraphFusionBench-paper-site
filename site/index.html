@@ -16,6 +16,7 @@
           <a href="#pipeline">Pipeline</a>
           <a href="#data">Sample Pool</a>
           <a href="#bench10k">Benchmark 10k</a>
+          <a href="#ft-split">SFT / RL</a>
           <a href="#sft">SFT</a>
           <a href="#citation">Citation</a>
           <a href="https://github.com/DanielHuangjiakang/GraphFusionBench" target="_blank" rel="noopener noreferrer">GitHub</a>
@@ -235,6 +236,80 @@
                 templates. No size-4+ groups observed on actual GPU (GTX 1660 Ti,
                 PyTorch 2.7.1) — the attention chain fuses as a size-3 group.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── FT Split ───────────────────────────────────── -->
+      <section id="ft-split" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Training Data Split</p>
+          <h2>SFT / RL Split</h2>
+        </div>
+        <div class="text-block" style="margin-bottom:28px;">
+          <p>
+            GraphFusionBench10k is split into a supervised fine-tuning set (SFT, 1,000
+            samples) and a reinforcement learning set (RL, 9,000 samples) using
+            bucket-stratified sampling that preserves each bucket's actual
+            has-fusion / no-fusion ratio from the GPU dump results (seed&nbsp;42).
+          </p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <strong>SFT</strong>
+            <span data-ft="sftTotal">1,000</span> samples
+          </div>
+          <div class="stat-card">
+            <strong data-ft="sftFused">660 (66.0%)</strong>
+            <span>SFT has-fusion</span>
+          </div>
+          <div class="stat-card">
+            <strong>RL</strong>
+            <span data-ft="rlTotal">9,000</span> samples
+          </div>
+          <div class="stat-card">
+            <strong data-ft="rlFused">5,951 (66.1%)</strong>
+            <span>RL has-fusion</span>
+          </div>
+        </div>
+
+        <div class="bench10k-grid">
+          <div class="chart-card">
+            <h3>SFT bucket distribution (1,000 samples)</h3>
+            <div id="sft-bucket-bars" class="bucket-bars">
+              <!-- rendered by JS -->
+            </div>
+            <div class="bar-legend">
+              <span class="legend-fused">Has fusion</span>
+              <span class="legend-none">No fusion</span>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3>Sampling strategy</h3>
+            <div class="text-block" style="font-size:0.95rem;">
+              <p>
+                Each bucket receives a quota proportional to its share of the full 10k
+                dataset. Within each bucket, the has-fusion / no-fusion ratio from the
+                actual GPU dump is preserved exactly.
+              </p>
+              <table style="margin-top:16px;font-size:0.88rem;">
+                <thead>
+                  <tr><th>Bucket</th><th>Quota</th><th>Fused%</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>B1 (1–3)</td>  <td>50</td>  <td>36%</td></tr>
+                  <tr><td>B2 (4–8)</td>  <td>210</td> <td>70%</td></tr>
+                  <tr><td>B3 (9–15)</td> <td>210</td> <td>67%</td></tr>
+                  <tr><td>B4 (16–25)</td><td>210</td> <td>65%</td></tr>
+                  <tr><td>B5 (26–50)</td><td>210</td> <td>66%</td></tr>
+                  <tr><td>B6 (51–80)</td><td>50</td>  <td>76%</td></tr>
+                  <tr><td>B7 (81–150)</td><td>30</td> <td>73%</td></tr>
+                  <tr><td>B8 (150+)</td> <td>30</td>  <td>73%</td></tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
