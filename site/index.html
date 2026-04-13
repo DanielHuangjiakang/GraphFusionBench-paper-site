@@ -180,7 +180,13 @@
         </div>
 
         <div class="domain-section">
-          <h3>Domain coverage across 19,550 deduplicated models</h3>
+          <h3>Domain distribution across 19,550 deduplicated pool models</h3>
+          <p style="font-size:0.875rem;color:var(--muted);margin-bottom:12px;">
+            Classified by filename and first-30-line keyword matching. Shape ops and
+            Conv/CNN dominate the raw pool; reuse sampling applies domain rebalancing
+            to target attention (25%), conv_cnn (25%), and normalization (12%) — counteracting
+            the pool's natural skew.
+          </p>
           <div id="domain-bars" class="domain-bars">
             <!-- rendered by JS -->
           </div>
@@ -199,8 +205,8 @@
             <span>generated benchmark samples</span>
           </div>
           <div class="stat-card">
-            <strong data-summary="hasFusion">6,611</strong>
-            <span>has-fusion samples (66.1%)</span>
+            <strong data-summary="hasFusion">6,586</strong>
+            <span>has-fusion samples (65.9%)</span>
           </div>
           <div class="stat-card">
             <strong data-summary="templateTypes">25</strong>
@@ -237,6 +243,54 @@
                 PyTorch 2.7.1) — the attention chain fuses as a size-3 group.
               </p>
             </div>
+          </div>
+        </div>
+
+        <!-- Bucket allocation table -->
+        <div class="chart-card" style="margin-top:28px;">
+          <h3>Bucket allocation — v2 plan (B0–B7)</h3>
+          <p style="font-size:0.875rem;color:var(--muted);margin-bottom:16px;">
+            Samples are bucketed by <strong>pre-fusion scheduler node count</strong>.
+            Reuse ratio reflects fraction drawn from the real sample pool; remainder is
+            synthesized from parameterized templates.
+          </p>
+          <div class="table-wrap">
+            <table id="bucket-alloc-table">
+              <thead>
+                <tr>
+                  <th>Bucket</th>
+                  <th>Nodes</th>
+                  <th class="number">Quota</th>
+                  <th class="number">Fusion %</th>
+                  <th class="number">Reuse %</th>
+                  <th class="number">Synthetic %</th>
+                </tr>
+              </thead>
+              <tbody id="bucket-alloc-body">
+                <!-- rendered by JS -->
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="2"><strong>Total</strong></td>
+                  <td class="number"><strong>10,000</strong></td>
+                  <td></td><td></td><td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pool node distribution -->
+        <div class="chart-card pool-node-card" style="margin-top:20px;">
+          <h3>Pool node distribution vs. reuse plan</h3>
+          <p style="font-size:0.875rem;color:var(--muted);margin-bottom:16px;">
+            Pool availability drops sharply above 15 nodes. Original plans assumed 65–90%
+            reuse for B4–B7 but the pool contains far too few large-graph models.
+            Revised reuse ratios (B4: 20%, B5: 8%, B6: 6%, B7: 9%) reflect pool reality;
+            remaining quota is filled by template synthesis.
+          </p>
+          <div id="pool-node-bars" class="pool-node-bars">
+            <!-- rendered by JS -->
           </div>
         </div>
       </section>
@@ -319,8 +373,9 @@
               fusion groups derived from the baseline post-fusion dump.
             </p>
             <p>
-              Sampling is stratified by scheduler node count. Buckets B3–B8 target a
-              roughly 1:3 no-fusion to has-fusion split; B1 uses 50/50 for structural
+              Sampling is stratified by scheduler node count. Buckets B3–B7 target a
+              roughly 1:3 no-fusion to has-fusion split; B0 forces no-fusion (single-node
+              graphs), and B1–B2 use lower fusion ratios (0% / 12.5% / 45%) for structural
               diversity. Each accepted has-fusion sample is validated against the actual
               Inductor baseline result — template intent alone does not qualify.
             </p>
@@ -351,10 +406,12 @@
         <pre class="code-block"><code>GraphFusionBench/
   GraphFusionBench/
     GraphFusionBench10k/      # 10,000 synthetic benchmark samples
-      B1_node1_3/
-      B2_node4_8/
-      ...
-      B8_node150_plus/
+      data/
+        B0_node1/
+        B1_node2_3/
+        B2_node4_8/
+        ...
+        B7_node101_plus/
       manifest.json
     models_by_bench/          # 19,550 real-benchmark sample pool
   models_for_sft/             # SFT training records (Alpaca format)

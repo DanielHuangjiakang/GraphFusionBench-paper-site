@@ -140,6 +140,52 @@ function renderFtSplit(ftSplit) {
   }).join("");
 }
 
+function renderBucketAllocTable(buckets) {
+  const tbody = document.querySelector("#bucket-alloc-body");
+  if (!tbody || !buckets) return;
+  tbody.innerHTML = buckets.map((b) => {
+    const fusionLabel = b.fusionRatio === 0 ? "0% (forced)" : `~${b.fusionRatio}%`;
+    return `<tr>
+      <td><strong>${b.id}</strong></td>
+      <td class="bucket-range">${b.range} nodes</td>
+      <td class="number">${numberFormat.format(b.quota)}</td>
+      <td class="number">${fusionLabel}</td>
+      <td class="number">${b.reuseRatio}%</td>
+      <td class="number">${b.syntheticRatio}%</td>
+    </tr>`;
+  }).join("");
+}
+
+function renderPoolNodeBars(rows) {
+  const root = document.querySelector("#pool-node-bars");
+  if (!root || !rows) return;
+  const maxPool = Math.max(...rows.map((r) => r.poolCount));
+  root.innerHTML = rows.map((r) => {
+    const poolBarPct = (r.poolCount / maxPool) * 100;
+    // reuse bar as % of the pool bar width (nested inside pool bar)
+    const reuseInnerPct = r.reuseQuota > 0 && r.poolCount > 0
+      ? Math.min((r.reuseQuota / r.poolCount) * 100, 100)
+      : 0;
+    const badge = r.reuseRatio === 0
+      ? `<span class="pool-badge pool-badge-skip">0% reuse</span>`
+      : `<span class="pool-badge pool-badge-ok">${r.reuseRatio}% reuse</span>`;
+    return `
+      <div class="pool-row">
+        <div class="pool-id-col">
+          <strong>${r.bucket}</strong>
+          <span class="bucket-range">${r.range}</span>
+        </div>
+        <div class="pool-bar-wrap" style="width:100%">
+          <div class="pool-bar-bg" style="width:${poolBarPct}%">
+            <div class="pool-bar-reuse" style="width:${reuseInnerPct}%"></div>
+          </div>
+        </div>
+        <span class="pool-count">${numberFormat.format(r.poolCount)}</span>
+        ${badge}
+      </div>`;
+  }).join("");
+}
+
 async function loadStats() {
   try {
     const res = await fetch("data/stats.json");
@@ -153,6 +199,8 @@ async function loadStats() {
     renderFusionSizeBars(b10k.fusionGroupSizes || []);
     renderFtSplit(data.ftSplit || null);
     renderBucketBars(data.sftBuckets || []);
+    renderBucketAllocTable(data.bucketAllocation || []);
+    renderPoolNodeBars(data.poolNodeDistribution || []);
   } catch (err) {
     console.warn("stats load failed:", err);
   }

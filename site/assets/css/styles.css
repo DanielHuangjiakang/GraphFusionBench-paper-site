@@ -694,6 +694,75 @@ td.col-notes {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
+/* ── Pool node distribution bars ─────────────────────── */
+
+.pool-node-bars {
+  display: grid;
+  gap: 11px;
+}
+
+.pool-row {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr) 60px 110px;
+  gap: 12px;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.pool-id-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.pool-bar-wrap {
+  /* full width container */
+}
+
+.pool-bar-bg {
+  height: 12px;
+  background: #dbe8fc;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.pool-bar-reuse {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 999px;
+}
+
+.pool-count {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.pool-badge {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.pool-badge-ok   { background: #d1fae5; color: #065f46; }
+.pool-badge-warn { background: #fef3c7; color: #92400e; }
+.pool-badge-skip { background: #f3f4f6; color: var(--muted); }
+
+/* ── Bucket allocation table ─────────────────────────── */
+
+#bucket-alloc-table th.number,
+#bucket-alloc-table td.number {
+  text-align: right;
+}
+
+#bucket-alloc-table .bucket-range {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
 /* ── Footer ──────────────────────────────────────────── */
 
 .footer {
